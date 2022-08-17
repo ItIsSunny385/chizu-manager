@@ -5,7 +5,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <header className="text-gray-600 body-font bg-gray-200">
-        <div className="container flex flex-wrap p-2 flex-col flex-row">
+        <div className="container flex flex-wrap p-3 flex-col flex-row">
           <a className="flex title-font font-medium items-center text-gray-900">
             <span className="ml-3 text-xl">地図マネージャー</span>
           </a>
