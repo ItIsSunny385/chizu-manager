@@ -5,7 +5,7 @@ import Input from "../components/Input";
 
 const Home: NextPage = () => {
   return (
-    <div className="mx-6">
+    <>
       <div className="md:flex md:items-center my-6">
         <div>
           <Input type="text" />
@@ -23,7 +23,7 @@ const Home: NextPage = () => {
         <Card href="#" name="31-A" description="牛久市役所周辺" />
         <Card href="#" name="31-A" description="牛久市役所周辺" />
       </div>
-    </div>
+    </>
   );
 };
 

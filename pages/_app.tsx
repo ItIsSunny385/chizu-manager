@@ -19,18 +19,19 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Link>
           </div>
           <div>
-            <a
-              href="#"
-              className="inline-block text-xl px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-purple-500 hover:bg-white mt-0"
-            >
-              <FontAwesomeIcon icon={faGear} />
-            </a>
+            <Link href="/setting">
+              <a className="inline-block text-xl px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-purple-500 hover:bg-white mt-0">
+                <FontAwesomeIcon icon={faGear} />
+              </a>
+            </Link>
           </div>
         </nav>
       </header>
       <main className="body-font">
         <div className="container p-1 mx-auto">
-          <Component {...pageProps} />
+          <div className="mx-6">
+            <Component {...pageProps} />
+          </div>
         </div>
       </main>
     </>
