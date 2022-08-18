@@ -17,7 +17,7 @@ const Home: NextPage = () => {
           <Button>新規追加</Button>
         </div>
       </div>
-      <div className="flex flex-wrap -m-4">
+      <div className="flex flex-wrap">
         <Card href="#" name="31-A" description="牛久市役所周辺" />
         <Card href="#" name="31-A" description="牛久市役所周辺" />
         <Card href="#" name="31-A" description="牛久市役所周辺" />
