@@ -3,10 +3,16 @@ import type { AppProps } from "next/app";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
+      <Head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon.png"></link>
+        <meta name="theme-color" content="#fff" />
+      </Head>
       <header>
         <nav className="flex items-center justify-between flex-wrap bg-purple-500 p-4">
           <div className="flex items-center flex-shrink-0 text-white mr-6">
