@@ -31,7 +31,7 @@ const Setting: NextPage = () => {
           </thead>
           <tbody>
             {statuses.map((x, i) => (
-              <tr>
+              <tr key={x.name}>
                 <td
                   className={`${
                     i !== 0 ? "border-t-2 border-gray-200" : ""
