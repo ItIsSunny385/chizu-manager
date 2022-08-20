@@ -81,7 +81,29 @@ const Setting: NextPage = () => {
         <div className="ml-auto text-right">
           <Button onClick={() => setDisplayStatusModal(true)}>新規追加</Button>
         </div>
-        {displayStatusModal && <Modal />}
+        {displayStatusModal && (
+          <Modal
+            title="ステータス追加編集"
+            footer={
+              <>
+                <Button
+                  className="mx-1"
+                  onClick={() => setDisplayStatusModal(false)}
+                >
+                  キャンセル
+                </Button>
+                <Button
+                  className="mx-1"
+                  onClick={() => setDisplayStatusModal(false)}
+                >
+                  OK
+                </Button>
+              </>
+            }
+          >
+            <p>ステータスを追加編集します。</p>
+          </Modal>
+        )}
       </div>
       <hr className="my-5" />
       <div className="my-5">
