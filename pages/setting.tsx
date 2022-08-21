@@ -1,21 +1,17 @@
 import type { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "../components/Button";
-import Modal from "../components/Modal";
+import StatusModal from "../components/StatusModal";
 import { Status } from "../types/db";
-import { getAllStatus, getDB } from "../utils/db";
+import { useDB, useStatuses } from "../utils/hook";
+import { v4 as uuidv4 } from "uuid";
+import { deleteStatus, putStatus } from "../utils/db";
 
 const Setting: NextPage = () => {
-  const [statuses, setStatuses] = useState<Status[]>();
-  const [displayStatusModal, setDisplayStatusModal] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      const db = await getDB();
-      const newStatuses = await getAllStatus(db);
-      setStatuses(newStatuses);
-    })();
-  }, []);
+  const [selectedStatus, setSelectedStatus] = useState<Status>();
+  const [count, setCount] = useState(0);
+  const db = useDB();
+  const statuses = useStatuses(db, count);
 
   return (
     <>
@@ -45,7 +41,7 @@ const Setting: NextPage = () => {
               </thead>
               <tbody>
                 {statuses.map((x, i) => (
-                  <tr key={x.name}>
+                  <tr key={x.id}>
                     <td
                       className={`${
                         i !== 0 ? "border-t-2 border-gray-200" : ""
@@ -66,10 +62,35 @@ const Setting: NextPage = () => {
                       } px-4 py-3`}
                     >
                       <span>
-                        <a href="#">編集</a>
+                        <a href="#">↑</a>
                       </span>
                       <span className="ml-2">
-                        <a href="#">削除</a>
+                        <a href="#">↓</a>
+                      </span>
+                      <span className="ml-2">
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setSelectedStatus(x);
+                          }}
+                        >
+                          編集
+                        </a>
+                      </span>
+                      <span className="ml-2">
+                        <a
+                          href="#"
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            if (db != null) {
+                              await deleteStatus(db, x.id);
+                              setCount((x) => x + 1);
+                            }
+                          }}
+                        >
+                          削除
+                        </a>
                       </span>
                     </td>
                   </tr>
@@ -78,31 +99,36 @@ const Setting: NextPage = () => {
             </table>
           )}
         </div>
-        <div className="ml-auto text-right">
-          <Button onClick={() => setDisplayStatusModal(true)}>新規追加</Button>
-        </div>
-        {displayStatusModal && (
-          <Modal
-            title="ステータス追加編集"
-            footer={
-              <>
-                <Button
-                  className="mx-1"
-                  onClick={() => setDisplayStatusModal(false)}
-                >
-                  キャンセル
-                </Button>
-                <Button
-                  className="mx-1"
-                  onClick={() => setDisplayStatusModal(false)}
-                >
-                  OK
-                </Button>
-              </>
-            }
-          >
-            <p>ステータスを追加編集します。</p>
-          </Modal>
+        {db != null && statuses != null && (
+          <>
+            <div className="ml-auto text-right">
+              <Button
+                onClick={() =>
+                  setSelectedStatus({
+                    id: uuidv4(),
+                    name: "",
+                    color: "",
+                    order: statuses.length,
+                  })
+                }
+              >
+                新規追加
+              </Button>
+            </div>
+            {selectedStatus && (
+              <StatusModal
+                target={selectedStatus}
+                onClickCanel={() => {
+                  setSelectedStatus(undefined);
+                }}
+                onClickOK={async (status) => {
+                  await putStatus(db, status);
+                  setCount((x) => x + 1);
+                  setSelectedStatus(undefined);
+                }}
+              />
+            )}
+          </>
         )}
       </div>
       <hr className="my-5" />
