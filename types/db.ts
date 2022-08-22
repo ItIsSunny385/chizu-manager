@@ -28,3 +28,29 @@ export const StatusConverter: Converter<Status> = {
     };
   },
 };
+
+export interface Config {
+  id: string;
+  defaultLatitude: number;
+  defaultLongitude: number;
+  defaultZ: number;
+}
+
+export const ConfigConverter: Converter<Config> = {
+  toData: (instance: Config) => {
+    return {
+      id: instance.id,
+      defaultLatitude: instance.defaultLatitude,
+      defaultLongitude: instance.defaultLongitude,
+      defaultZ: instance.defaultZ,
+    };
+  },
+  toInstance: (data: any) => {
+    return {
+      id: data.id,
+      defaultLatitude: data.defaultLatitude,
+      defaultLongitude: data.defaultLongitude,
+      defaultZ: data.defaultZ,
+    };
+  },
+};

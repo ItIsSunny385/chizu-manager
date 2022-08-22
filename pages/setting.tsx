@@ -6,6 +6,11 @@ import { Status } from "../types/db";
 import { useDB, useStatuses } from "../utils/hook";
 import { v4 as uuidv4 } from "uuid";
 import { deleteStatus, putStatus } from "../utils/db";
+import dynamic from "next/dynamic";
+const MapSetting = dynamic(() => import("../components/MapSetting"), {
+  loading: () => <p>A map is loading</p>,
+  ssr: false,
+});
 
 const Setting: NextPage = () => {
   const [selectedStatus, setSelectedStatus] = useState<Status>();
@@ -135,17 +140,10 @@ const Setting: NextPage = () => {
       <div className="my-5">
         <div className="my-3">
           <h2 className="text-2xl font-medium title-font mb-2 text-gray-900">
-            中心座標
+            中心座標・Zスケール
           </h2>
         </div>
-      </div>
-      <hr className="my-5" />
-      <div className="my-5">
-        <div className="my-3">
-          <h2 className="text-2xl font-medium title-font mb-2 text-gray-900">
-            Google Map
-          </h2>
-        </div>
+        <MapSetting />
       </div>
     </>
   );

@@ -1,5 +1,11 @@
 import { DBSchema, IDBPDatabase, openDB } from "idb";
-import { Converter, Status, StatusConverter } from "../types/db";
+import {
+  Config,
+  ConfigConverter,
+  Converter,
+  Status,
+  StatusConverter,
+} from "../types/db";
 
 export interface ChizuManagerDB extends DBSchema {
   status: {
@@ -12,18 +18,31 @@ export interface ChizuManagerDB extends DBSchema {
     key: string;
     indexes: { "by-order": number };
   };
+  config: {
+    value: {
+      id: string;
+      defaultLatitude: number;
+      defaultLongitude: number;
+      defaultZ: number;
+    };
+    key: string;
+  };
 }
 
-export type StoreNames = "status";
+export type StoreNames = "status" | "config";
 
 export const getDB = async () => {
   const db = await openDB<ChizuManagerDB>("chizu-manager", 1, {
     upgrade(db) {
-      const store = db.createObjectStore("status", {
+      const statusStore = db.createObjectStore("status", {
         keyPath: "id",
         autoIncrement: false,
       });
-      store.createIndex("by-order", "order");
+      statusStore.createIndex("by-order", "order");
+      const configStore = db.createObjectStore("config", {
+        keyPath: "id",
+        autoIncrement: false,
+      });
     },
   });
   return db;
@@ -69,7 +88,7 @@ export async function put<T>(
   return response;
 }
 
-export async function del<T>(
+export async function del(
   db: IDBPDatabase<ChizuManagerDB>,
   storeName: StoreNames,
   key: string
@@ -99,3 +118,21 @@ export const deleteStatus = async (
   db: IDBPDatabase<ChizuManagerDB>,
   key: string
 ) => del(db, "status", key);
+
+export const getConfig = async (db: IDBPDatabase<ChizuManagerDB>) => {
+  const config = await get<Config>(db, "config", "default", ConfigConverter);
+  return (
+    config ||
+    ({
+      id: "default",
+      defaultLatitude: 35.6895014,
+      defaultLongitude: 139.6917337,
+      defaultZ: 13,
+    } as Config)
+  );
+};
+
+export const putConfig = async (
+  db: IDBPDatabase<ChizuManagerDB>,
+  data: Config
+) => put<Config>(db, "config", data, ConfigConverter);
