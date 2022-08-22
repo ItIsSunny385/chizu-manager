@@ -143,7 +143,7 @@ const Setting: NextPage = () => {
             中心座標・Zスケール
           </h2>
         </div>
-        <MapSetting />
+        {db && <MapSetting db={db} />}
       </div>
     </>
   );

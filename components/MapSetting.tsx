@@ -1,11 +1,22 @@
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
+import { useRef } from "react";
+import { IDBPDatabase } from "idb";
+import { ChizuManagerDB, putConfig } from "../utils/db";
+import { useConfig } from "../utils/hook";
 
-const MapSetting = () => {
-  return (
+interface Props {
+  db: IDBPDatabase<ChizuManagerDB>;
+}
+
+const MapSetting = (props: Props) => {
+  const markerRef = useRef<any>(null);
+  const config = useConfig(props.db);
+
+  return config != null ? (
     <MapContainer
-      center={[35.6895014, 139.6917337]}
+      center={[config.defaultLatitude, config.defaultLongitude]}
       zoom={13}
       style={{ height: "80vh", width: "100%" }}
     >
@@ -14,7 +25,8 @@ const MapSetting = () => {
         url="https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
       />
       <Marker
-        position={[35.6895014, 139.6917337]}
+        ref={markerRef}
+        position={[config.defaultLatitude, config.defaultLongitude]}
         draggable
         icon={
           new Icon({
@@ -28,8 +40,21 @@ const MapSetting = () => {
             shadowSize: [41, 41],
           })
         }
+        eventHandlers={{
+          dragend: async () => {
+            const latLng = markerRef.current.getLatLng();
+            const newConfig = {
+              ...config,
+              defaultLatitude: latLng.lat,
+              defaultLongitude: latLng.lng,
+            };
+            await putConfig(props.db, newConfig);
+          },
+        }}
       />
     </MapContainer>
+  ) : (
+    <div />
   );
 };
 
