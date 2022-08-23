@@ -1,17 +1,19 @@
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { IDBPDatabase } from "idb";
 import { ChizuManagerDB, putConfig } from "../utils/db";
 import { useConfig } from "../utils/hook";
+import { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
 
 interface Props {
   db: IDBPDatabase<ChizuManagerDB>;
 }
 
 const MapSetting = (props: Props) => {
-  const markerRef = useRef<any>(null);
+  const [map, setMap] = useState<LeafletMap>();
+  const markerRef = useRef<LeafletMarker>(null);
   const config = useConfig(props.db);
 
   return config != null ? (
@@ -19,6 +21,7 @@ const MapSetting = (props: Props) => {
       center={[config.defaultLatitude, config.defaultLongitude]}
       zoom={13}
       style={{ height: "80vh", width: "100%" }}
+      whenCreated={(x) => setMap(x)}
     >
       <TileLayer
         attribution="<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
@@ -42,7 +45,8 @@ const MapSetting = (props: Props) => {
         }
         eventHandlers={{
           dragend: async () => {
-            const latLng = markerRef.current.getLatLng();
+            const latLng = markerRef.current!.getLatLng();
+            map!.flyTo(latLng);
             const newConfig = {
               ...config,
               defaultLatitude: latLng.lat,
