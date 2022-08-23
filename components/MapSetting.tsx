@@ -6,6 +6,7 @@ import { IDBPDatabase } from "idb";
 import { ChizuManagerDB, putConfig } from "../utils/db";
 import { useConfig } from "../utils/hook";
 import { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
+import { Config } from "../types/db";
 
 interface Props {
   db: IDBPDatabase<ChizuManagerDB>;
@@ -47,12 +48,19 @@ const MapSetting = (props: Props) => {
           dragend: async () => {
             const latLng = markerRef.current!.getLatLng();
             map!.flyTo(latLng);
-            const newConfig = {
+            const nextConfig: Config = {
               ...config,
               defaultLatitude: latLng.lat,
               defaultLongitude: latLng.lng,
             };
-            await putConfig(props.db, newConfig);
+            await putConfig(props.db, nextConfig);
+          },
+          zoomend: async () => {
+            const nextConfig: Config = {
+              ...config,
+              defaultZ: map!.getZoom(),
+            };
+            await putConfig(props.db, nextConfig);
           },
         }}
       />
