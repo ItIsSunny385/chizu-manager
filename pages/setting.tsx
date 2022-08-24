@@ -43,8 +43,8 @@ const Setting: NextPage = () => {
                     <td className="border-t-2 border-gray-200 px-4 py-3">
                       <img
                         src={getMarkerBase64(x.color, x.abb, x.letterColor)}
-                        width="30px"
-                        height="30px"
+                        width="26x"
+                        height="26px"
                       />
                     </td>
                     <td className="border-t-2 border-gray-200 px-4 py-3">
