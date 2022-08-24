@@ -60,3 +60,26 @@ export const ConfigConverter: Converter<Config> = {
     };
   },
 };
+
+export interface Chizu {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export const ChizuConverter: Converter<Chizu> = {
+  toData: (instance: Chizu) => {
+    return {
+      id: instance.id,
+      name: instance.name,
+      description: instance.description,
+    };
+  },
+  toInstance: (data: any) => {
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+    };
+  },
+};

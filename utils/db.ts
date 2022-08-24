@@ -1,5 +1,7 @@
 import { DBSchema, IDBPDatabase, openDB } from "idb";
 import {
+  Chizu,
+  ChizuConverter,
   Config,
   ConfigConverter,
   Converter,
@@ -8,6 +10,15 @@ import {
 } from "../types/db";
 
 export interface ChizuManagerDB extends DBSchema {
+  config: {
+    value: {
+      id: string;
+      defaultLatitude: number;
+      defaultLongitude: number;
+      defaultZ: number;
+    };
+    key: string;
+  };
   status: {
     value: {
       id: string;
@@ -19,18 +30,18 @@ export interface ChizuManagerDB extends DBSchema {
     key: string;
     indexes: { "by-order": number };
   };
-  config: {
+  chizu: {
     value: {
       id: string;
-      defaultLatitude: number;
-      defaultLongitude: number;
-      defaultZ: number;
+      name: string;
+      description: string;
     };
     key: string;
+    indexes: { "by-name": string };
   };
 }
 
-export type StoreNames = "status" | "config";
+export type StoreNames = "status" | "config" | "chizu";
 
 export const getDB = async () => {
   const db = await openDB<ChizuManagerDB>("chizu-manager", 1, {
@@ -44,6 +55,11 @@ export const getDB = async () => {
         keyPath: "id",
         autoIncrement: false,
       });
+      const chizuStore = db.createObjectStore("chizu", {
+        keyPath: "id",
+        autoIncrement: false,
+      });
+      chizuStore.createIndex("by-name", "name");
     },
   });
   return db;
@@ -137,3 +153,20 @@ export const putConfig = async (
   db: IDBPDatabase<ChizuManagerDB>,
   data: Config
 ) => put<Config>(db, "config", data, ConfigConverter);
+
+export const getChizu = async (db: IDBPDatabase<ChizuManagerDB>, key: string) =>
+  get<Chizu>(db, "chizu", key, ChizuConverter);
+
+export const getAllChizu = async (db: IDBPDatabase<ChizuManagerDB>) =>
+  getAll<Chizu>(db, "chizu", "by-name" as never, ChizuConverter);
+
+export const addChizu = async (db: IDBPDatabase<ChizuManagerDB>, data: Chizu) =>
+  add<Chizu>(db, "chizu", data, ChizuConverter);
+
+export const putChizu = async (db: IDBPDatabase<ChizuManagerDB>, data: Chizu) =>
+  put<Chizu>(db, "chizu", data, ChizuConverter);
+
+export const deleteChizu = async (
+  db: IDBPDatabase<ChizuManagerDB>,
+  key: string
+) => del(db, "chizu", key);
