@@ -35,7 +35,7 @@ const Setting: NextPage = () => {
           ) : (
             <table className="table-auto w-full text-left whitespace-no-wrap">
               <tbody>
-                {statuses.map((x) => (
+                {statuses.map((x, i) => (
                   <tr key={x.id}>
                     <td className="border-t-2 border-gray-200 px-4 py-3">
                       {x.name}
@@ -49,10 +49,40 @@ const Setting: NextPage = () => {
                     </td>
                     <td className="border-t-2 border-gray-200 px-4 py-3">
                       <span>
-                        <a href="#">↑</a>
+                        <a
+                          href="#"
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            if (i === 0 || db == null) return;
+                            [statuses[i].order, statuses[i - 1].order] = [
+                              statuses[i - 1].order,
+                              statuses[i].order,
+                            ];
+                            await putStatus(db, statuses[i]);
+                            await putStatus(db, statuses[i - 1]);
+                            setCount((x) => x + 1);
+                          }}
+                        >
+                          ↑
+                        </a>
                       </span>
                       <span className="ml-2">
-                        <a href="#">↓</a>
+                        <a
+                          href="#"
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            if (i === statuses.length || db == null) return;
+                            [statuses[i].order, statuses[i + 1].order] = [
+                              statuses[i + 1].order,
+                              statuses[i].order,
+                            ];
+                            await putStatus(db, statuses[i]);
+                            await putStatus(db, statuses[i + 1]);
+                            setCount((x) => x + 1);
+                          }}
+                        >
+                          ↓
+                        </a>
                       </span>
                       <span className="ml-2">
                         <a
