@@ -58,6 +58,14 @@ const MapSettingChild = (props: ChildProps) => {
           shadowSize: [41, 41],
         })
       }
+      draggable
+      eventHandlers={{
+        dragend: async (evt) => {
+          const latLng = evt.target.getLatLng();
+          map.flyTo(latLng);
+          // flyTo が完了すると Map の zoomend が発火する
+        },
+      }}
     />
   );
 };
