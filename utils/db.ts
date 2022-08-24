@@ -12,6 +12,7 @@ export interface ChizuManagerDB extends DBSchema {
     value: {
       id: string;
       name: string;
+      abb: string;
       color: string;
       order: number;
     };
@@ -32,21 +33,17 @@ export interface ChizuManagerDB extends DBSchema {
 export type StoreNames = "status" | "config";
 
 export const getDB = async () => {
-  const db = await openDB<ChizuManagerDB>("chizu-manager", 2, {
-    upgrade(db) {
-      try {
-        const statusStore = db.createObjectStore("status", {
-          keyPath: "id",
-          autoIncrement: false,
-        });
-        statusStore.createIndex("by-order", "order");
-      } catch {}
-      try {
-        const configStore = db.createObjectStore("config", {
-          keyPath: "id",
-          autoIncrement: false,
-        });
-      } catch {}
+  const db = await openDB<ChizuManagerDB>("chizu-manager", 1, {
+    upgrade(db, oldVersion) {
+      const statusStore = db.createObjectStore("status", {
+        keyPath: "id",
+        autoIncrement: false,
+      });
+      statusStore.createIndex("by-order", "order");
+      const configStore = db.createObjectStore("config", {
+        keyPath: "id",
+        autoIncrement: false,
+      });
     },
   });
   return db;

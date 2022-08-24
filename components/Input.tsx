@@ -8,6 +8,7 @@ interface Props {
   children?: ReactElement | undefined;
   type?: HTMLInputTypeAttribute | undefined;
   defaultValue?: string | number | readonly string[] | undefined;
+  maxLength?: number | undefined;
   onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
 }
 
@@ -18,6 +19,7 @@ const Input = (props: Props) => {
       type={props.type}
       defaultValue={props.defaultValue}
       onChange={props.onChange}
+      maxLength={props.maxLength}
     >
       {props.children}
     </input>

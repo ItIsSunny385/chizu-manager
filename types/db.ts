@@ -6,7 +6,9 @@ export interface Converter<T> {
 export interface Status {
   id: string;
   name: string;
+  abb: string;
   color: string;
+  letterColor: string;
   order: number;
 }
 
@@ -15,7 +17,9 @@ export const StatusConverter: Converter<Status> = {
     return {
       id: instance.id,
       name: instance.name,
+      abb: instance.abb,
       color: instance.color,
+      letterColor: instance.letterColor,
       order: instance.order,
     };
   },
@@ -23,7 +27,9 @@ export const StatusConverter: Converter<Status> = {
     return {
       id: data.id,
       name: data.name,
+      abb: data.abb,
       color: data.color,
+      letterColor: data.letterColor,
       order: data.order,
     };
   },

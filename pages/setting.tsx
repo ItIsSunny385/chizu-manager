@@ -112,7 +112,9 @@ const Setting: NextPage = () => {
                   setSelectedStatus({
                     id: uuidv4(),
                     name: "",
-                    color: "",
+                    abb: "",
+                    color: "#000000",
+                    letterColor: "#FFFFFF",
                     order: statuses.length,
                   })
                 }

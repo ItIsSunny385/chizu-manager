@@ -26,17 +26,43 @@ const StatusModal = (props: Props) => {
                 return { ...x, name: e.target.value };
               });
             }}
+            maxLength={4}
+          />
+        </div>
+        <div className="w-full my-3">
+          <Label>略称</Label>
+          <Input
+            defaultValue={props.target.abb}
+            onChange={(e) => {
+              setNewTarget((x) => {
+                return { ...x, abb: e.target.value };
+              });
+            }}
+            maxLength={1}
           />
         </div>
         <div className="w-full my-3">
           <Label>色</Label>
-          <Input
+          <input
             defaultValue={props.target.color}
             onChange={(e) => {
               setNewTarget((x) => {
                 return { ...x, color: e.target.value };
               });
             }}
+            type="color"
+          />
+        </div>
+        <div className="w-full my-3">
+          <Label>文字色</Label>
+          <input
+            defaultValue={props.target.letterColor}
+            onChange={(e) => {
+              setNewTarget((x) => {
+                return { ...x, letterColor: e.target.value };
+              });
+            }}
+            type="color"
           />
         </div>
         <div className="text-right">
