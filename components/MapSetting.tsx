@@ -66,7 +66,6 @@ const MapSetting = (props: Props) => {
       center={[config.defaultLatitude, config.defaultLongitude]}
       zoom={config.defaultZ}
       style={{ height: "80vh", width: "100%" }}
-      maxZoom={19}
     >
       <TileLayer
         attribution="<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
