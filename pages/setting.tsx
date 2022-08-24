@@ -8,6 +8,11 @@ import { v4 as uuidv4 } from "uuid";
 import { deleteStatus, putStatus } from "../utils/db";
 import dynamic from "next/dynamic";
 import { getMarkerBase64 } from "../utils/marker";
+import Table from "../components/Table";
+import Tbody from "../components/Tbody";
+import Tr from "../components/Tr";
+import Td from "../components/Td";
+import H2 from "./H2";
 const MapSetting = dynamic(() => import("../components/MapSetting"), {
   loading: () => <p>A map is loading</p>,
   ssr: false,
@@ -23,9 +28,7 @@ const Setting: NextPage = () => {
     <>
       <div className="my-5">
         <div className="my-3">
-          <h2 className="text-2xl font-medium title-font mb-2 text-gray-900">
-            ステータス
-          </h2>
+          <H2>ステータス</H2>
         </div>
         <div>
           {statuses == null ? (
@@ -33,21 +36,19 @@ const Setting: NextPage = () => {
           ) : statuses.length === 0 ? (
             <p className="text-center">データがありません。</p>
           ) : (
-            <table className="table-auto w-full text-left whitespace-no-wrap">
-              <tbody>
+            <Table>
+              <Tbody>
                 {statuses.map((x, i) => (
-                  <tr key={x.id}>
-                    <td className="border-t-2 border-gray-200 px-4 py-3">
-                      {x.name}
-                    </td>
-                    <td className="border-t-2 border-gray-200 px-4 py-3">
+                  <Tr key={x.id}>
+                    <Td>{x.name}</Td>
+                    <Td>
                       <img
                         src={getMarkerBase64(x.color, x.abb, x.letterColor)}
                         width="26x"
                         height="26px"
                       />
-                    </td>
-                    <td className="border-t-2 border-gray-200 px-4 py-3">
+                    </Td>
+                    <Td>
                       <span>
                         <a
                           href="#"
@@ -109,11 +110,11 @@ const Setting: NextPage = () => {
                           削除
                         </a>
                       </span>
-                    </td>
-                  </tr>
+                    </Td>
+                  </Tr>
                 ))}
-              </tbody>
-            </table>
+              </Tbody>
+            </Table>
           )}
         </div>
         {db != null && statuses != null && (
@@ -153,9 +154,7 @@ const Setting: NextPage = () => {
       <hr className="my-5" />
       <div className="my-5">
         <div className="my-3">
-          <h2 className="text-2xl font-medium title-font text-gray-900">
-            デフォルト地図
-          </h2>
+          <H2>デフォルト地図</H2>
           <p className="my-1">
             地図作成時にデフォルトで表示される地図の Zoom
             レベルと中心座標を指定します。
