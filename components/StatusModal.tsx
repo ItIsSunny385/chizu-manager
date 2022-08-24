@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Status } from "../types/db";
+import { getMarkerWithLetter } from "../utils/marker";
 import Button from "./Button";
 import Input from "./Input";
 import Label from "./Label";
@@ -63,6 +64,22 @@ const StatusModal = (props: Props) => {
               });
             }}
             type="color"
+          />
+        </div>
+        <div className="w-full my-3">
+          <img
+            src={
+              "data:image/svg+xml;base64," +
+              window.btoa(
+                getMarkerWithLetter(
+                  newTarget.color,
+                  newTarget.abb,
+                  newTarget.letterColor
+                )
+              )
+            }
+            width="40px"
+            height="40px"
           />
         </div>
         <div className="text-right">
