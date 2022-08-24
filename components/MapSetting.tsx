@@ -1,11 +1,12 @@
 import { MapContainer, Marker, TileLayer, useMapEvent } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
-import React from "react";
+import React, { useRef } from "react";
 import { IDBPDatabase } from "idb";
 import { ChizuManagerDB, putConfig } from "../utils/db";
 import { useConfig } from "../utils/hook";
 import { Config } from "../types/db";
+import { Marker as LeafletMarker } from "leaflet";
 
 interface ChildProps {
   db: IDBPDatabase<ChizuManagerDB>;
@@ -14,15 +15,20 @@ interface ChildProps {
 
 const MapSettingChild = (props: ChildProps) => {
   const map = useMapEvent("zoomend", async () => {
+    const latLng = markerRef.current!.getLatLng();
     const nextConfig: Config = {
       ...props.config,
+      defaultLatitude: latLng.lat,
+      defaultLongitude: latLng.lng,
       defaultZ: map.getZoom(),
     };
     await putConfig(props.db, nextConfig);
   });
+  const markerRef = useRef<LeafletMarker>(null);
 
   return (
     <Marker
+      ref={markerRef}
       position={[props.config.defaultLatitude, props.config.defaultLongitude]}
       draggable
       icon={
@@ -40,12 +46,8 @@ const MapSettingChild = (props: ChildProps) => {
       eventHandlers={{
         dragend: async (evt) => {
           const latLng = evt.target.getLatLng();
-          const nextConfig: Config = {
-            ...props.config,
-            defaultLatitude: latLng.lat,
-            defaultLongitude: latLng.lng,
-          };
-          await putConfig(props.db, nextConfig);
+          map.flyTo(latLng);
+          // flyTo が完了すると Map の zoomend が発火する
         },
       }}
     />
