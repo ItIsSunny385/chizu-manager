@@ -1,12 +1,11 @@
-import { MapContainer, Marker, TileLayer, useMapEvent } from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Icon } from "leaflet";
-import React, { useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { IDBPDatabase } from "idb";
 import { ChizuManagerDB, putConfig } from "../utils/db";
 import { useConfig } from "../utils/hook";
 import { Config } from "../types/db";
-import { Marker as LeafletMarker } from "leaflet";
+import { Icon } from "leaflet";
 
 interface ChildProps {
   db: IDBPDatabase<ChizuManagerDB>;
@@ -14,23 +13,39 @@ interface ChildProps {
 }
 
 const MapSettingChild = (props: ChildProps) => {
-  const map = useMapEvent("zoomend", async () => {
-    const latLng = markerRef.current!.getLatLng();
-    const nextConfig: Config = {
-      ...props.config,
-      defaultLatitude: latLng.lat,
-      defaultLongitude: latLng.lng,
-      defaultZ: map.getZoom(),
-    };
-    await putConfig(props.db, nextConfig);
+  const [center, setCenter] = useState({
+    lat: props.config.defaultLatitude,
+    lng: props.config.defaultLongitude,
   });
-  const markerRef = useRef<LeafletMarker>(null);
+
+  const map = useMapEvents({
+    zoomend: async () => {
+      const latLng = map.getCenter();
+      const nextConfig: Config = {
+        ...props.config,
+        defaultLatitude: latLng.lat,
+        defaultLongitude: latLng.lng,
+        defaultZ: map.getZoom(),
+      };
+      setCenter(map.getCenter());
+      await putConfig(props.db, nextConfig);
+    },
+    moveend: async () => {
+      const latLng = map.getCenter();
+      const nextConfig: Config = {
+        ...props.config,
+        defaultLatitude: latLng.lat,
+        defaultLongitude: latLng.lng,
+        defaultZ: map.getZoom(),
+      };
+      setCenter(map.getCenter());
+      await putConfig(props.db, nextConfig);
+    },
+  });
 
   return (
     <Marker
-      ref={markerRef}
-      position={[props.config.defaultLatitude, props.config.defaultLongitude]}
-      draggable
+      position={center}
       icon={
         new Icon({
           iconUrl:
@@ -43,13 +58,6 @@ const MapSettingChild = (props: ChildProps) => {
           shadowSize: [41, 41],
         })
       }
-      eventHandlers={{
-        dragend: async (evt) => {
-          const latLng = evt.target.getLatLng();
-          map.flyTo(latLng);
-          // flyTo が完了すると Map の zoomend が発火する
-        },
-      }}
     />
   );
 };

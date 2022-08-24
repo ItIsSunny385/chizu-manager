@@ -141,9 +141,13 @@ const Setting: NextPage = () => {
       <hr className="my-5" />
       <div className="my-5">
         <div className="my-3">
-          <h2 className="text-2xl font-medium title-font mb-2 text-gray-900">
-            中心座標・Zスケール
+          <h2 className="text-2xl font-medium title-font text-gray-900">
+            デフォルト地図
           </h2>
+          <p className="my-1">
+            地図作成時にデフォルトで表示される地図の Zoom
+            レベルと中心座標を指定します。
+          </p>
         </div>
         {db && <MapSetting db={db} />}
       </div>
