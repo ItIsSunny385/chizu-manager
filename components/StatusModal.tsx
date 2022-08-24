@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Status } from "../types/db";
-import { getMarkerWithLetter } from "../utils/marker";
+import { getMarkerBase64 } from "../utils/marker";
 import Button from "./Button";
 import Input from "./Input";
 import Label from "./Label";
@@ -68,16 +68,11 @@ const StatusModal = (props: Props) => {
         </div>
         <div className="w-full my-3">
           <img
-            src={
-              "data:image/svg+xml;base64," +
-              window.btoa(
-                getMarkerWithLetter(
-                  newTarget.color,
-                  newTarget.abb,
-                  newTarget.letterColor
-                )
-              )
-            }
+            src={getMarkerBase64(
+              newTarget.color,
+              newTarget.abb,
+              newTarget.letterColor
+            )}
             width="40px"
             height="40px"
           />
