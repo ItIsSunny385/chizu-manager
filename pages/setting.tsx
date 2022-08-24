@@ -7,6 +7,7 @@ import { useDB, useStatuses } from "../utils/hook";
 import { v4 as uuidv4 } from "uuid";
 import { deleteStatus, putStatus } from "../utils/db";
 import dynamic from "next/dynamic";
+import { getMarkerBase64 } from "../utils/marker";
 const MapSetting = dynamic(() => import("../components/MapSetting"), {
   loading: () => <p>A map is loading</p>,
   ssr: false,
@@ -33,39 +34,20 @@ const Setting: NextPage = () => {
             <p className="text-center">データがありません。</p>
           ) : (
             <table className="table-auto w-full text-left whitespace-no-wrap">
-              <thead>
-                <tr>
-                  <th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
-                    ステータス名
-                  </th>
-                  <th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                    色
-                  </th>
-                  <th className="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100"></th>
-                </tr>
-              </thead>
               <tbody>
-                {statuses.map((x, i) => (
+                {statuses.map((x) => (
                   <tr key={x.id}>
-                    <td
-                      className={`${
-                        i !== 0 ? "border-t-2 border-gray-200" : ""
-                      } px-4 py-3`}
-                    >
+                    <td className="border-t-2 border-gray-200 px-4 py-3">
                       {x.name}
                     </td>
-                    <td
-                      className={`${
-                        i !== 0 ? "border-t-2 border-gray-200" : ""
-                      } px-4 py-3`}
-                    >
-                      {x.color}
+                    <td className="border-t-2 border-gray-200 px-4 py-3">
+                      <img
+                        src={getMarkerBase64(x.color, x.abb, x.letterColor)}
+                        width="30px"
+                        height="30px"
+                      />
                     </td>
-                    <td
-                      className={`${
-                        i !== 0 ? "border-t-2 border-gray-200" : ""
-                      } px-4 py-3`}
-                    >
+                    <td className="border-t-2 border-gray-200 px-4 py-3">
                       <span>
                         <a href="#">↑</a>
                       </span>
