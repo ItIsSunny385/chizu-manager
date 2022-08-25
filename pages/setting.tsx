@@ -12,7 +12,7 @@ import Table from "../components/Table";
 import Tbody from "../components/Tbody";
 import Tr from "../components/Tr";
 import Td from "../components/Td";
-import H2 from "./H2";
+import H2 from "../components/H2";
 const MapSetting = dynamic(() => import("../components/MapSetting"), {
   loading: () => <p>A map is loading</p>,
   ssr: false,
