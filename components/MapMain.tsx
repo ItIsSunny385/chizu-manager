@@ -7,6 +7,7 @@ import "leaflet/dist/leaflet.css";
 
 interface Props {
   db: IDBPDatabase<ChizuManagerDB>;
+  id: string;
 }
 
 const MapMain = (props: Props) => {
