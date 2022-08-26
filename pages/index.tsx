@@ -1,9 +1,13 @@
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
+import { v4 as uuidv4 } from "uuid";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import Input from "../components/Input";
 
 const Home: NextPage = () => {
+  const router = useRouter();
+
   return (
     <>
       <div className="md:flex md:items-center my-6">
@@ -14,7 +18,9 @@ const Home: NextPage = () => {
           <Button>検索</Button>
         </div>
         <div className="mb-0 ml-auto text-right mt-3 md:mt-0">
-          <Button>新規追加</Button>
+          <Button onClick={() => router.push(`/edit/?id=${uuidv4()}`)}>
+            新規追加
+          </Button>
         </div>
       </div>
       <div className="flex flex-wrap">
