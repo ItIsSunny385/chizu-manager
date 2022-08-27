@@ -6,7 +6,7 @@ import { ChizuManagerDB, putConfig } from "../utils/db";
 import { useConfig } from "../utils/hook";
 import { Config } from "../types/db";
 import { Icon } from "leaflet";
-import { OfflineTileLayer } from "../lib/leaflet-offline-react/OfflineTIleLayer";
+import { OfflineTileLayer } from "../lib/leaflet-offline-react/OfflineTileLayer";
 
 interface ChildProps {
   db: IDBPDatabase<ChizuManagerDB>;
