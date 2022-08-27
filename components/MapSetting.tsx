@@ -1,4 +1,4 @@
-import { MapContainer, Marker, useMapEvents } from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import React, { useRef, useState } from "react";
 import { IDBPDatabase } from "idb";
@@ -6,7 +6,6 @@ import { ChizuManagerDB, putConfig } from "../utils/db";
 import { useConfig } from "../utils/hook";
 import { Config } from "../types/db";
 import { Icon } from "leaflet";
-import { OfflineTileLayer } from "../lib/leaflet-offline-react/OfflineTileLayer";
 
 interface ChildProps {
   db: IDBPDatabase<ChizuManagerDB>;
@@ -85,7 +84,7 @@ const MapSetting = (props: Props) => {
       zoom={config.defaultZ}
       style={{ height: "80vh", width: "100%" }}
     >
-      <OfflineTileLayer
+      <TileLayer
         ref={tileLayerOfflineRef}
         attribution="<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
         url="https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"

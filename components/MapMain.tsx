@@ -4,6 +4,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import { ChizuManagerDB } from "../utils/db";
 import { useConfig } from "../utils/hook";
 import "leaflet/dist/leaflet.css";
+import { OfflineTileLayer } from "../lib/leaflet-offline-react/OfflineTileLayer";
 
 interface Props {
   db: IDBPDatabase<ChizuManagerDB>;
@@ -23,7 +24,7 @@ const MapMain = (props: Props) => {
         width: "100%",
       }}
     >
-      <TileLayer
+      <OfflineTileLayer
         attribution="<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
         url="https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
       />
