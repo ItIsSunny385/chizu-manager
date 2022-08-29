@@ -1,3 +1,5 @@
+/* @types/leaflet と leaflet.offline をもとに実装 */
+
 export interface GridLayerOptions {
   tileSize?: number | Point | undefined;
   opacity?: number | undefined;

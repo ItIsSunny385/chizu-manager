@@ -1,3 +1,5 @@
+/* @types/react-leaflet をもとに実装 */
+
 /// <reference types="react" />
 import { LayerProps } from "@react-leaflet/core";
 import {

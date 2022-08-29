@@ -1,3 +1,5 @@
+/* @types/leaflet と leaflet.offline をもとに実装 */
+
 export interface OfflineTileLayerOptions extends GridLayerOptions {
   id?: string | undefined;
   accessToken?: string | undefined;
