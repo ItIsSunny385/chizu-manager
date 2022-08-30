@@ -1,10 +1,10 @@
 import { IDBPDatabase } from "idb";
 import React from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer } from "react-leaflet";
 import { ChizuManagerDB } from "../utils/db";
 import { useConfig } from "../utils/hook";
 import "leaflet/dist/leaflet.css";
-import { OfflineTileLayer } from "../lib/leaflet-offline-react/OfflineTileLayer";
+import { TileLayerOffline } from "../lib/leaflet-offline-react/TileLayerOffline";
 
 interface Props {
   db: IDBPDatabase<ChizuManagerDB>;
@@ -23,10 +23,13 @@ const MapMain = (props: Props) => {
         }px`,
         width: "100%",
       }}
+      maxZoom={20}
     >
-      <OfflineTileLayer
+      <TileLayerOffline
         attribution="<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
         url="https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
+        maxNativeZoom={18}
+        maxZoom={20}
       />
     </MapContainer>
   ) : (
