@@ -1,5 +1,5 @@
 /**
- * Copyright © 2022 allartk. All rights reserved.
+ * Copyright © 2022 allartk and contributors. All rights reserved.
  * https://github.com/allartk/leaflet.offline/blob/v3.0.0-rc.1/src/TileManager.ts
  */
 
