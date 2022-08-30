@@ -70,9 +70,9 @@ export async function get<T>(
   storeName: StoreNames,
   key: string,
   converter: Converter<T>
-): Promise<T | undefined> {
+): Promise<T | null> {
   const data = await db.get(storeName, key);
-  return data && converter.toInstance(data);
+  return data != null ? converter.toInstance(data) : null;
 }
 
 export async function getAll<T>(

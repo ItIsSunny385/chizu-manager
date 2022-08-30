@@ -1,7 +1,7 @@
 import { IDBPDatabase } from "idb";
 import { useEffect, useState } from "react";
-import { Config, Status } from "../types/db";
-import { ChizuManagerDB, getAllStatus, getDB, getConfig } from "./db";
+import { Chizu, Config, Status } from "../types/db";
+import { ChizuManagerDB, getAllStatus, getDB, getConfig, getChizu } from "./db";
 
 export const useDB = (): IDBPDatabase<ChizuManagerDB> | undefined => {
   const [db, setDB] = useState<IDBPDatabase<ChizuManagerDB>>();
@@ -47,4 +47,17 @@ export const useConfig = (db: IDBPDatabase<ChizuManagerDB>) => {
   }, [db]);
 
   return config;
+};
+
+export const useChizu = (db: IDBPDatabase<ChizuManagerDB>, key: string) => {
+  const [chizu, setChizu] = useState<Chizu | null>();
+
+  useEffect(() => {
+    (async () => {
+      const newChizu = await getChizu(db, key);
+      setChizu(newChizu);
+    })();
+  }, [db, key]);
+
+  return chizu;
 };

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Status } from "../types/db";
 import { getMarkerBase64 } from "../utils/marker";
 import Button from "./Button";
+import FormField from "./FormField";
 import Input from "./Input";
 import Label from "./Label";
 import Modal from "./Modal";
@@ -18,7 +19,7 @@ const StatusModal = (props: Props) => {
   return (
     <Modal title="ステータス追加編集">
       <form>
-        <div className="w-full my-3">
+        <FormField>
           <Label>名前</Label>
           <Input
             defaultValue={props.target.name}
@@ -29,8 +30,8 @@ const StatusModal = (props: Props) => {
             }}
             maxLength={4}
           />
-        </div>
-        <div className="w-full my-3">
+        </FormField>
+        <FormField>
           <Label>略称</Label>
           <Input
             defaultValue={props.target.abb}
@@ -41,8 +42,8 @@ const StatusModal = (props: Props) => {
             }}
             maxLength={1}
           />
-        </div>
-        <div className="w-full my-3">
+        </FormField>
+        <FormField>
           <Label>色</Label>
           <input
             defaultValue={props.target.color}
@@ -53,8 +54,8 @@ const StatusModal = (props: Props) => {
             }}
             type="color"
           />
-        </div>
-        <div className="w-full my-3">
+        </FormField>
+        <FormField>
           <Label>文字色</Label>
           <input
             defaultValue={props.target.letterColor}
@@ -65,8 +66,8 @@ const StatusModal = (props: Props) => {
             }}
             type="color"
           />
-        </div>
-        <div className="w-full my-3">
+        </FormField>
+        <FormField>
           <img
             src={getMarkerBase64(
               newTarget.color,
@@ -76,7 +77,7 @@ const StatusModal = (props: Props) => {
             width="40px"
             height="40px"
           />
-        </div>
+        </FormField>
         <div className="text-right">
           <Button className="ml-auto" onClick={props.onClickCanel}>
             キャンセル
