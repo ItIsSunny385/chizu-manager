@@ -1,4 +1,7 @@
-/* react-leaflet をもとに実装 */
+/**
+ * Copyright 2020 Paul Le Cam and contributors (“Licensor”)
+ * https://github.com/PaulLeCam/react-leaflet/blob/v3.2.5/packages/react-leaflet/src/TileLayer.tsx をもとに実装しました
+ */
 
 import {
   createTileLayerComponent,
