@@ -25,9 +25,16 @@ function MyApp({ Component, pageProps, router }: AppProps) {
                 </a>
               </Link>
             </div>
-            <div>
+            <div className="ml-auto">
+              <Link href="/about">
+                <a className="inline-block text-base px-2 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-purple-500 hover:bg-white mt-0">
+                  このサイトについて
+                </a>
+              </Link>
+            </div>
+            <div className="ml-2">
               <Link href="/setting">
-                <a className="inline-block text-base px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-purple-500 hover:bg-white mt-0">
+                <a className="inline-block text-base px-2 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-purple-500 hover:bg-white mt-0">
                   設定
                 </a>
               </Link>
