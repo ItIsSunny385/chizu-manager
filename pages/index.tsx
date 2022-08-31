@@ -1,12 +1,22 @@
 import type { NextPage } from "next";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Button from "../components/Button";
-import Card from "../components/Card";
 import Input from "../components/Input";
+import Table from "../components/Table";
+import Tbody from "../components/Tbody";
+import Td from "../components/Td";
+import Tr from "../components/Tr";
+import { deleteChizu } from "../utils/db";
+import { useChizues, useDB } from "../utils/hook";
 
 const Home: NextPage = () => {
   const router = useRouter();
+  const db = useDB();
+  const [count, setCount] = useState(0);
+  const chizues = useChizues(db, count);
 
   return (
     <>
@@ -23,11 +33,38 @@ const Home: NextPage = () => {
           </Button>
         </div>
       </div>
-      <div className="flex flex-wrap">
-        <Card href="#" name="31-A" description="牛久市役所周辺" />
-        <Card href="#" name="31-A" description="牛久市役所周辺" />
-        <Card href="#" name="31-A" description="牛久市役所周辺" />
-        <Card href="#" name="31-A" description="牛久市役所周辺" />
+      <div>
+        {db == null || chizues == null ? (
+          <p>データ取得中です。</p>
+        ) : chizues.length === 0 ? (
+          <p>データがありません。</p>
+        ) : (
+          <Table>
+            <Tbody>
+              {chizues.map((x) => (
+                <Tr key={x.id}>
+                  <Td>{x.name.length > 0 ? x.name : "（未設定）"}</Td>
+                  <Td>{x.description}</Td>
+                  <Td>
+                    <Link href={`/edit/?id=${x.id}`}>
+                      <a>編集</a>
+                    </Link>
+                    <a
+                      href="#"
+                      onClick={async () => {
+                        await deleteChizu(db, x.id);
+                        setCount((x) => x + 1);
+                      }}
+                      className="ml-2"
+                    >
+                      削除
+                    </a>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        )}
       </div>
     </>
   );
