@@ -10,7 +10,14 @@ const CreateBounds = (props: Props) => {
   const [draggingI, setDraggingI] = useState<number>();
   const map = useMapEvents({
     click(e) {
-      if (!closed) setPositions([...positions, e.latlng]);
+      if (
+        !closed &&
+        (positions.length === 0 ||
+          positions[0].lat !== e.latlng.lat ||
+          positions[0].lng !== e.latlng.lng)
+      ) {
+        setPositions([...positions, e.latlng]);
+      }
     },
     mousemove(e) {
       if (draggingI != null) {
@@ -30,7 +37,25 @@ const CreateBounds = (props: Props) => {
   });
 
   return closed ? (
-    <Polygon positions={positions} />
+    <React.Fragment>
+      <Polygon positions={positions} />
+      {positions.map((x, i) => (
+        <CircleMarker
+          key={i}
+          center={x}
+          radius={5}
+          eventHandlers={{
+            click: i === 0 ? () => setClosed(true) : undefined,
+            mousedown: () => {
+              map.dragging.disable();
+              map.boxZoom.disable();
+              setDraggingI(i);
+            },
+          }}
+          pathOptions={{ fill: true, fillOpacity: 1 }}
+        />
+      ))}
+    </React.Fragment>
   ) : (
     <React.Fragment>
       <Polyline positions={positions} />
@@ -40,7 +65,13 @@ const CreateBounds = (props: Props) => {
           center={x}
           radius={5}
           eventHandlers={{
-            click: i === 0 ? () => setClosed(true) : undefined,
+            click:
+              i === 0
+                ? (e) => {
+                    setClosed(true);
+                    e.originalEvent.preventDefault();
+                  }
+                : undefined,
             mousedown: () => {
               map.dragging.disable();
               map.boxZoom.disable();
