@@ -6,6 +6,7 @@ import { useChizu, useConfig } from "../utils/hook";
 import "leaflet/dist/leaflet.css";
 import { TileLayerOffline } from "../lib/leaflet-offline-react/TileLayerOffline";
 import BasicInfoModal from "./BasicInfoModal";
+import CreateBounds from "./CreateBounds";
 
 interface Props {
   db: IDBPDatabase<ChizuManagerDB>;
@@ -42,6 +43,7 @@ const MapMain = (props: Props) => {
           maxNativeZoom={18}
           maxZoom={20}
         />
+        <CreateBounds />
       </MapContainer>
       {displayBasicInfoModal && (
         <BasicInfoModal
