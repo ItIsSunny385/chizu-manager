@@ -9,7 +9,7 @@ import Table from "../components/Table";
 import Tbody from "../components/Tbody";
 import Td from "../components/Td";
 import Tr from "../components/Tr";
-import { deleteChizu } from "../utils/db";
+import { deleteBound, deleteChizu, getBounds } from "../utils/db";
 import { useChizues, useDB } from "../utils/hook";
 
 const Home: NextPage = () => {
@@ -52,6 +52,10 @@ const Home: NextPage = () => {
                     <a
                       href="#"
                       onClick={async () => {
+                        const bounds = await getBounds(db, x.id);
+                        for (let i = 0; i < bounds.length; i++) {
+                          await deleteBound(db, bounds[i].id);
+                        }
                         await deleteChizu(db, x.id);
                         setCount((x) => x + 1);
                       }}

@@ -83,3 +83,32 @@ export const ChizuConverter: Converter<Chizu> = {
     };
   },
 };
+
+export interface Bound {
+  id: string;
+  chizuId: string;
+  lat: number;
+  lng: number;
+  order: number;
+}
+
+export const BoundConverter: Converter<Bound> = {
+  toData: (instance: Bound) => {
+    return {
+      id: instance.id,
+      chizuId: instance.chizuId,
+      lat: instance.lat,
+      lng: instance.lng,
+      order: instance.order,
+    };
+  },
+  toInstance: (data: any) => {
+    return {
+      id: data.id,
+      chizuId: data.chizuId,
+      lat: data.lat,
+      lng: data.lng,
+      order: data.order,
+    };
+  },
+};

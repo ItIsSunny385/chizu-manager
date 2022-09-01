@@ -1,6 +1,6 @@
 import { IDBPDatabase } from "idb";
 import { useEffect, useState } from "react";
-import { Chizu, Config, Status } from "../types/db";
+import { Bound, Chizu, Config, Status } from "../types/db";
 import {
   ChizuManagerDB,
   getAllStatus,
@@ -8,6 +8,7 @@ import {
   getConfig,
   getChizu,
   getAllChizu,
+  getBounds,
 } from "./db";
 
 export const useDB = (): IDBPDatabase<ChizuManagerDB> | undefined => {
@@ -87,4 +88,25 @@ export const useChizues = (
   }, [db, count]);
 
   return chizues;
+};
+
+export const useBounds = (
+  db: IDBPDatabase<ChizuManagerDB> | undefined,
+  chizuId: string,
+  count: number
+) => {
+  const [bounds, setBounds] = useState<Bound[]>();
+
+  useEffect(() => {
+    (async () => {
+      if (db != null) {
+        const data = await getBounds(db, chizuId);
+        setBounds(data);
+      } else {
+        setBounds([]);
+      }
+    })();
+  }, [db, count]);
+
+  return bounds;
 };

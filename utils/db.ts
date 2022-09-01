@@ -1,5 +1,7 @@
 import { DBSchema, IDBPDatabase, openDB } from "idb";
 import {
+  Bound,
+  BoundConverter,
   Chizu,
   ChizuConverter,
   Config,
@@ -39,9 +41,20 @@ export interface ChizuManagerDB extends DBSchema {
     key: string;
     indexes: { "by-name": string };
   };
+  bound: {
+    value: {
+      id: string;
+      chizuId: string;
+      lat: number;
+      lng: number;
+      order: number;
+    };
+    key: string;
+    indexes: { "by-chizuId": string };
+  };
 }
 
-export type StoreNames = "status" | "config" | "chizu";
+export type StoreNames = "status" | "config" | "chizu" | "bound";
 
 export const getDB = async () => {
   const db = await openDB<ChizuManagerDB>("chizu-manager", 1, {
@@ -60,6 +73,11 @@ export const getDB = async () => {
         autoIncrement: false,
       });
       chizuStore.createIndex("by-name", "name");
+      const boundStore = db.createObjectStore("bound", {
+        keyPath: "id",
+        autoIncrement: false,
+      });
+      boundStore.createIndex("by-chizuId", "chizuId");
     },
   });
   return db;
@@ -170,3 +188,30 @@ export const deleteChizu = async (
   db: IDBPDatabase<ChizuManagerDB>,
   key: string
 ) => del(db, "chizu", key);
+
+export const getBound = async (db: IDBPDatabase<ChizuManagerDB>, key: string) =>
+  get<Bound>(db, "bound", key, BoundConverter);
+
+export const getAllBounds = async (db: IDBPDatabase<ChizuManagerDB>) =>
+  getAll<Bound>(db, "bound", "by-chizuId" as never, BoundConverter);
+
+export const getBounds = async (
+  db: IDBPDatabase<ChizuManagerDB>,
+  chizuId: string
+) => {
+  const all = await getAllBounds(db);
+  return all
+    .filter((x) => x.chizuId === chizuId)
+    .sort((a, b) => a.order - b.order);
+};
+
+export const addBound = async (db: IDBPDatabase<ChizuManagerDB>, data: Bound) =>
+  add<Bound>(db, "bound", data, BoundConverter);
+
+export const putBound = async (db: IDBPDatabase<ChizuManagerDB>, data: Bound) =>
+  put<Bound>(db, "bound", data, BoundConverter);
+
+export const deleteBound = async (
+  db: IDBPDatabase<ChizuManagerDB>,
+  key: string
+) => del(db, "bound", key);

@@ -1,8 +1,8 @@
 import { IDBPDatabase } from "idb";
 import React, { useEffect, useState } from "react";
 import { MapContainer } from "react-leaflet";
-import { ChizuManagerDB, putChizu } from "../utils/db";
-import { useChizu, useConfig } from "../utils/hook";
+import { ChizuManagerDB, deleteBound, putBound, putChizu } from "../utils/db";
+import { useBounds, useChizu, useConfig } from "../utils/hook";
 import "leaflet/dist/leaflet.css";
 import { TileLayerOffline } from "../lib/leaflet-offline-react/TileLayerOffline";
 import BasicInfoModal from "./BasicInfoModal";
@@ -16,6 +16,7 @@ interface Props {
 const MapMain = (props: Props) => {
   const config = useConfig(props.db);
   const chizu = useChizu(props.db, props.id);
+  const bounds = useBounds(props.db, props.id, 0);
   const [displayBasicInfoModal, setDisplayBasicInfoModal] = useState(false);
 
   useEffect(() => {
@@ -43,7 +44,23 @@ const MapMain = (props: Props) => {
           maxNativeZoom={18}
           maxZoom={20}
         />
-        <CreateBounds />
+        {bounds != null && (
+          <CreateBounds
+            defaultBounds={bounds}
+            id={props.id}
+            saveBounds={async (data) => {
+              const oldIds = bounds.map((x) => x.id);
+              const newIds = data.map((x) => x.id);
+              const deletedIds = oldIds.filter((x) => !newIds.includes(x));
+              for (let i = 0; i < deletedIds.length; i++) {
+                await deleteBound(props.db, deletedIds[i]);
+              }
+              for (let i = 0; i < data.length; i++) {
+                await putBound(props.db, data[i]);
+              }
+            }}
+          />
+        )}
       </MapContainer>
       {displayBasicInfoModal && (
         <BasicInfoModal
