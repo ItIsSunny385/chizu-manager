@@ -38,7 +38,6 @@ const CreateBounds = (props: Props) => {
         setBounds((prev) => {
           const next = [...prev];
           next[draggingI] = { ...next[draggingI], ...e.latlng };
-          props.saveBounds(next);
           return next;
         });
       }
@@ -46,6 +45,7 @@ const CreateBounds = (props: Props) => {
     mouseup(e) {
       if (draggingI != null) {
         map.dragging.enable();
+        props.saveBounds(bounds);
         setDraggingI(undefined);
       }
     },
