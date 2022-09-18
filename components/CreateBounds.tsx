@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { CircleMarker, Polygon, Polyline, useMapEvents } from "react-leaflet";
+import {
+  CircleMarker,
+  Polygon,
+  Polyline,
+  Popup,
+  useMapEvents,
+} from "react-leaflet";
 import { v4 as uuidv4 } from "uuid";
 import { Bound } from "../types/db";
 
@@ -20,6 +26,7 @@ const CreateBounds = (props: Props) => {
       }
   >();
   const [afterDragging, setAfterDragging] = useState(false);
+  const [rightClickedI, setRightClickedI] = useState<number>();
 
   const map = useMapEvents({
     click(e) {
@@ -54,30 +61,32 @@ const CreateBounds = (props: Props) => {
       }
     },
     mouseup(e) {
-      if (typeof dragging === "number") {
-        map.dragging.enable();
-        props.saveBounds(bounds);
-        setDragging(undefined);
-        setAfterDragging(true);
-        setTimeout(() => setAfterDragging(false), 100);
-      } else if (typeof dragging !== "undefined") {
-        map.dragging.enable();
-        setBounds((prev) => {
-          const next = [...prev];
-          next.splice(dragging.index + 1, 0, {
-            id: uuidv4(),
-            chizuId: props.id,
-            order: bounds.length + 1,
-            ...dragging.position,
+      if (e.originalEvent.button === 0) {
+        if (typeof dragging === "number") {
+          map.dragging.enable();
+          props.saveBounds(bounds);
+          setDragging(undefined);
+          setAfterDragging(true);
+          setTimeout(() => setAfterDragging(false), 100);
+        } else if (typeof dragging !== "undefined") {
+          map.dragging.enable();
+          setBounds((prev) => {
+            const next = [...prev];
+            next.splice(dragging.index + 1, 0, {
+              id: uuidv4(),
+              chizuId: props.id,
+              order: bounds.length + 1,
+              ...dragging.position,
+            });
+            next.forEach((x, i) => {
+              x.order = i + 1;
+            });
+            return next;
           });
-          next.forEach((x, i) => {
-            x.order = i + 1;
-          });
-          return next;
-        });
-        setDragging(undefined);
-        setAfterDragging(true);
-        setTimeout(() => setAfterDragging(false), 100);
+          setDragging(undefined);
+          setAfterDragging(true);
+          setTimeout(() => setAfterDragging(false), 100);
+        }
       }
     },
   });
@@ -117,17 +126,25 @@ const CreateBounds = (props: Props) => {
                     setDragging(undefined);
                   }
                 : undefined,
-            mousedown: () => {
-              map.dragging.disable();
-              map.boxZoom.disable();
-              setDragging(i);
+            mousedown: (e) => {
+              if (e.originalEvent.button === 0) {
+                map.dragging.disable();
+                map.boxZoom.disable();
+                setDragging(i);
+              }
             },
+            mouseup: (e) => {
+              if (e.originalEvent.button === 2) {
+                setRightClickedI(i);
+              }
+            },
+            contextmenu: (e) => e.originalEvent.preventDefault(),
           }}
           pathOptions={{ fill: true, fillOpacity: 1 }}
         />
       ))}
-      {bounds.map((x, j) => {
-        const y = bounds[(j + 1) % bounds.length];
+      {bounds.map((x, i) => {
+        const y = bounds[(i + 1) % bounds.length];
         const center = { lat: (x.lat + y.lat) / 2, lng: (x.lng + y.lng) / 2 };
         return (
           <CircleMarker
@@ -135,22 +152,48 @@ const CreateBounds = (props: Props) => {
             center={
               typeof dragging !== "undefined" &&
               typeof dragging !== "number" &&
-              j === dragging.index
+              i === dragging.index
                 ? dragging.position
                 : center
             }
             radius={5}
             eventHandlers={{
-              mousedown: () => {
-                map.dragging.disable();
-                map.boxZoom.disable();
-                setDragging({ index: j, position: center });
+              mousedown: (e) => {
+                if (e.originalEvent.button === 0) {
+                  map.dragging.disable();
+                  map.boxZoom.disable();
+                  setDragging({ index: i, position: center });
+                }
               },
+              contextmenu: (e) => e.originalEvent.preventDefault(),
             }}
             pathOptions={{ fill: true, fillOpacity: 1 }}
           />
         );
       })}
+      {rightClickedI != null && (
+        <Popup position={bounds[rightClickedI]}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setBounds((prev) => {
+                const next: Bound[] = [];
+                prev.forEach((x, i) => {
+                  if (i !== rightClickedI) {
+                    next.push(x);
+                  }
+                });
+                props.saveBounds(next);
+                return next;
+              });
+              setRightClickedI(undefined);
+            }}
+          >
+            削除
+          </a>
+        </Popup>
+      )}
     </React.Fragment>
   ) : (
     <React.Fragment>
@@ -176,11 +219,19 @@ const CreateBounds = (props: Props) => {
                     setDragging(undefined);
                   }
                 : undefined,
-            mousedown: () => {
-              map.dragging.disable();
-              map.boxZoom.disable();
-              setDragging(i);
+            mousedown: (e) => {
+              if (e.originalEvent.button === 0) {
+                map.dragging.disable();
+                map.boxZoom.disable();
+                setDragging(i);
+              }
             },
+            mouseup: (e) => {
+              if (e.originalEvent.button === 2) {
+                setRightClickedI(i);
+              }
+            },
+            contextmenu: (e) => e.originalEvent.preventDefault(),
           }}
           pathOptions={{ fill: true, fillOpacity: 1 }}
         />
@@ -202,16 +253,41 @@ const CreateBounds = (props: Props) => {
               }
               radius={5}
               eventHandlers={{
-                mousedown: () => {
-                  map.dragging.disable();
-                  map.boxZoom.disable();
-                  setDragging({ index: j, position: center });
+                mousedown: (e) => {
+                  if (e.originalEvent.button === 0) {
+                    map.dragging.disable();
+                    map.boxZoom.disable();
+                    setDragging({ index: j, position: center });
+                  }
                 },
+                contextmenu: (e) => e.originalEvent.preventDefault(),
               }}
               pathOptions={{ fill: true, fillOpacity: 1 }}
             />
           );
         })}
+      {rightClickedI != null && (
+        <Popup position={bounds[rightClickedI]}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setBounds((prev) => {
+                const next: Bound[] = [];
+                prev.forEach((x, i) => {
+                  if (i !== rightClickedI) {
+                    next.push(x);
+                  }
+                });
+                return next;
+              });
+              setRightClickedI(undefined);
+            }}
+          >
+            削除
+          </a>
+        </Popup>
+      )}
     </React.Fragment>
   );
 };
